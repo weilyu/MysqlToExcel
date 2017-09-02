@@ -16,6 +16,12 @@ connection = pymysql.connect(host=host, port=port, user=user,
 tables = settings['tables']
 workbook = openpyxl.Workbook()
 for table in tables:
+    # if table name is longer than 31 characters, use the first 31 characters
+    # as worksheet name
+    if (len(table) > 31):
+        print(table, end=' => ')
+        table = table[:31]
+        print(table)
     worksheet = workbook.create_sheet(table)
     with connection.cursor() as cursor:
         get_col_names_sql = "SELECT COLUMN_NAME " + \
@@ -32,3 +38,4 @@ for table in tables:
             worksheet.append(row)
 workbook.remove(workbook.active)
 workbook.save('test.xlsx')
+input('The job is done. Press enter to exist.')
